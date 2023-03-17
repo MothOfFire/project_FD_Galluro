@@ -27,8 +27,7 @@
     </div>
     <el-table :data="tableData"
               :header-cell-style="{backgroundColor:'rgba(156,180,184,0.5)'}"
-              :border="true"
-    >
+              :border="true">
       <el-table-column prop="uid" label="uId" width="80">
       </el-table-column>
       <el-table-column prop="uname" label="名称" width="120">
@@ -56,21 +55,32 @@
         </template>
       </el-table-column>
       <el-table-column prop="operate" label="操作">
-        <el-button size="small" type="success">修改</el-button>
-        <el-button size="small" type="danger">删除</el-button>
+        <template slot-scope=" ">
+            <el-button size="small"
+                       type="success"
+                       @click="updateUser(scope.row)">修改</el-button>
+          <el-popconfirm title="确定删除吗？"
+                         style="margin-left: 5px"
+                         @confirm="deleteUser(scope.row.uid)">
+            <el-button slot="reference"
+                       size="small"
+                       type="danger">删除</el-button>
+          </el-popconfirm>
+        </template>
       </el-table-column>
     </el-table>
     <!--分页组件-->
     <el-pagination
+        style="margin-top: 15px"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="pageNum"
-        :page-sizes="[2, 5, 10, 20]"
+        :page-sizes="[ 5, 10, 15,20]"
         :page-size="pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total">
     </el-pagination>
-    <!--对话框-->
+    <!--对话框 centerDialogVisibley用来控制对话框是否出现（true表示出现）-->
     <el-dialog
         title="提示"
         :visible.sync="centerDialogVisible"
@@ -130,9 +140,9 @@ export default {
       if(this.form.uid){
         return callback();
       }
-      this.$axios(this.$httpUrl+'/user/findByUname?uname='+this.form.uname)
-          .then(res=>{
-            if (res.code==200){
+      this.$axios.get(this.$httpUrl+'/user/findByUname?uname='+this.form.uname)
+          .then(res=>res.data).then(res=>{
+            if (res.code!=200){
               callback();
             }else {
               callback(new Error('名称已存在'));
@@ -140,9 +150,10 @@ export default {
           })
     };
     return {
+      user : JSON.parse(sessionStorage.getItem("CurUser")),
       tableData:[],
       pageNum:1,
-      pageSize:5,
+      pageSize:10,
       total:0,
       uname:'',
       usex:'',
@@ -182,7 +193,7 @@ export default {
         ],
         address: [
           { required: true, message: '请输入地址', trigger: 'blur' },
-          { min: 3, max: 8, message: '长度在 3 到 8 个字符', trigger: 'blur' }
+          { min: 3, max: 18, message: '长度在 3 到 18 个字符', trigger: 'blur' }
         ],
         uphone: [
           { required: true, message: '请输入电话', trigger: 'blur' },
@@ -214,24 +225,42 @@ export default {
       })
     },
     loadPost(){
-      this.$axios.post(this.$httpUrl+'/user/listAllPage',
-          {
+      if(this.user != null){
+        this.$axios.post(this.$httpUrl+'/user/listAllPage',
+            {
               pageNum:this.pageNum,
               pageSize:this.pageSize,
               param:{
-                  uname:this.uname.trim(),
-                  usex:this.usex
+                uname:this.uname.trim(),
+                usex:this.usex
               }
+            }
+        ).then(res=>res.data).then(res=>{
+          console.log(res);
+          if(res.code==200){
+            this.tableData = res.data;
+            this.total = res.total;
+          }else {
+            alert("数据获取失败");
           }
-      ).then(res=>res.data).then(res=>{
-        console.log(res);
-        if(res.code==200){
-          this.tableData = res.data;
-          this.total = res.total;
-        }else {
-          alert("数据获取失败");
-        }
-      })
+        });
+      }else {
+        this.$confirm('未登入请登录后再进入？','提示',{
+          confirmButtonText:'确定去登入',//确认按钮文字显示
+          type:'warning',
+          center:true,//文字居中
+          showCancelButton:false,//不显示取消按钮
+          closeOnClickModal:false,//是否可以点击空白处关闭弹窗
+        }).then(()=>{
+          this.$router.push('/');
+          sessionStorage.clear();
+        }).catch(()=>{
+          this.$message({
+            type:"info",
+            message:"大哥哥(姐姐)快去登录吧！！"
+          });
+        });
+      }
     },
     resetParam(){
       this.uname = '';
@@ -241,7 +270,43 @@ export default {
       this.centerDialogVisible = true;
       this.$nextTick(()=>{
         this.resetForm();
-      })
+      });
+    },
+    updateUser(row){
+      console.log(row);
+      this.centerDialogVisible = true;
+      this.$nextTick(()=>{
+        //赋值到表单
+        this.form.uid = row.uid;
+        this.form.uname = row.uname;
+        this.form.password = row.password;
+        this.form.usex = row.usex+'';
+        this.form.uage = row.uage+'';
+        this.form.address = row.address;
+        this.form.uphone = row.uphone;
+        this.form.role = row.role+'';
+      });
+    },
+    deleteUser(uid){
+      console.log(uid);
+      this.$axios.get(this.$httpUrl+'/user/deleteUser?uid='+uid)
+          .then(res=>res.data).then(res=>{
+        console.log(res);
+        if(res.code==200){
+          this.$message({
+            showClose: true,
+            message: '数据删除成功',
+            type: 'success'
+          });
+          this.loadPost();
+        }else {
+          this.$message({
+            showClose: true,
+            message: '数据删除失败',
+            type: 'error'
+          });
+        }
+      });
     },
     handleClose(done) {
       this.$confirm('确认关闭？')
@@ -251,10 +316,22 @@ export default {
           .catch(_ => {});
     },
     save(){
-      this.$refs.form.validate((valid) => {
-        if (valid) {
-          this.$axios.post(this.$httpUrl+'/user/addUser', this.form)
-              .then(res=>res.data).then(res=>{
+        this.$refs.form.validate((valid) => {
+          if (valid) {
+            if (this.form.uid) {
+             this.doUpdate();
+            } else {
+              this.doSave();
+            }
+          }else {
+            console.log('Error!!!')
+            return false;
+          }
+        });
+    },
+    doSave(){
+         this.$axios.post(this.$httpUrl+'/user/addUser', this.form)
+             .then(res=>res.data).then(res=>{
                 console.log(res);
                 if(res.code==200){
                   this.$message({
@@ -264,20 +341,36 @@ export default {
                   });
                   this.centerDialogVisible = false;
                   this.loadPost();
+                  this.resetForm();
                 }else {
                   this.$message({
-                    showClose: true,
-                    message: '数据添加失败',
-                    type: 'error'
+                      showClose: true,
+                      message: '数据添加失败',
+                      type: 'error'
                   });
-                  this.centerDialogVisible = false;
                 }
-              }
-          )
-        } else {
-          console.log('Error!!')
-          return false;
-        }
+             });
+    },
+    doUpdate(){
+      this.$axios.post(this.$httpUrl+'/user/updateUser', this.form)
+          .then(res=>res.data).then(res=>{
+            console.log(res);
+            if(res.code==200){
+              this.$message({
+                  showClose: true,
+                  message: '数据修改成功',
+                  type: 'success'
+              });
+              this.centerDialogVisible = false;
+              this.loadPost();
+              this.resetForm();
+           }else {
+              this.$message({
+               showClose: true,
+               message: '数据修改失败',
+               type: 'error'
+            });
+          }
       });
     },
     resetForm() {

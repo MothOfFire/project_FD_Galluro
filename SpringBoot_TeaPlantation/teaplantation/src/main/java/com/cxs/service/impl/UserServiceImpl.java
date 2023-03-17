@@ -39,13 +39,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
     }
 
     @Override
-    public void updateUser(User user) {
-        userMapper.updateUser(user);
+    public boolean updateUserByUid(User user) {
+        if(user == null){
+            return false;
+        }else {
+            userMapper.updateUserByUid(user);
+            return true;
+        }
     }
 
     @Override
-    public void deleteUserById(Integer uid) {
-        userMapper.deleteUserById(uid);
+    public boolean deleteUserById(Integer uid) {
+        if(uid == null){
+            return false;
+        }else {
+            userMapper.deleteUserById(uid);
+            return true;
+        }
     }
 
     @Override

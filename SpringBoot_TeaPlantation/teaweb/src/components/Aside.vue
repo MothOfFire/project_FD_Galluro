@@ -3,7 +3,7 @@
       background-color="#545c64"
       text-color="#fff"
       active-text-color="#ffd04b"
-      style="height: 100vh"
+      style="height: 100%"
       default-active="/Home"
       :collapse="is_collapse"
       :collapse-transition="false"
@@ -13,7 +13,7 @@
       <span slot="title">首页</span>
     </el-menu-item>
     <el-menu-item index="/One">
-      <i class="el-icon-umbrella"></i>
+      <i class="el-icon-user"></i>
       <span slot="title">游客信息管理</span>
     </el-menu-item>
     <el-menu-item index="/Two">
@@ -23,6 +23,10 @@
     <el-menu-item index="/Tree">
       <i class="el-icon-takeaway-box"></i>
       <span slot="title">茶园设备管理</span>
+    </el-menu-item>
+    <el-menu-item index="/Four">
+      <i class="el-icon-s-data"></i>
+      <span slot="title">数据可视化管理</span>
     </el-menu-item>
   </el-menu>
 </template>

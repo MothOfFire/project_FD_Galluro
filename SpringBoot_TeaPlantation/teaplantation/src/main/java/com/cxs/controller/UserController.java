@@ -32,6 +32,12 @@ public class UserController {
         return Result.suc(userService.findAllUser(),userService.getTotal());
     }
 
+    @GetMapping("/findByUname")
+    public Result<List<User>> findByUname(@RequestParam String uname){
+        List<User> list = userService.lambdaQuery().eq(User::getUname,uname).list();
+        return list.size()>0?Result.suc(list):Result.fail();
+    }
+
     //模糊查询
     @GetMapping("/findUserByKeyWord")
     public List<User> findUserByKeyWord(String keyword){
@@ -47,14 +53,33 @@ public class UserController {
 
     //修改user
     @PostMapping("/updateUser")
-    public void updateUser(@RequestBody User user){
-        userService.updateUser(user);
+    public Result<User> updateUser(@RequestBody User user){
+        return userService.updateUserByUid(user)?Result.suc():Result.fail();
     }
 
     //删除user
     @GetMapping("/deleteUser")
-    public void deleteUserById(Integer uid){
-        userService.deleteUserById(uid);
+    public Result<User> deleteUserById(@RequestParam String uid){
+        return userService.deleteUserById(Integer.parseInt(uid))?Result.suc():Result.fail();
+    }
+
+    //登录
+    @PostMapping("/login")
+    public Result<User> login(@RequestBody User user){
+        User result = userService
+                      .findUserByUserNameAndPassword(user.getUname(),user.getPassword());
+        return result != null?Result.suc(result):Result.fail();
+    }
+
+    //注册
+    @PostMapping("/register")
+    public Result<User> register(@RequestBody User user){
+        if (user.getUname() != null && user.getUname() != ""
+                && user.getPassword() != null && user.getPassword() != ""){
+             return userService.save(user)?Result.suc():Result.fail();
+        }else {
+            return Result.fail();
+        }
     }
 
     //分页查询

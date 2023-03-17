@@ -43,7 +43,7 @@ public interface UserMapper extends BaseMapper<User> {
             "usex=#{usex},uage=#{uage}," +
             "address=#{address},uphone=#{uphone}," +
             "role=#{role} where uid=#{uid} ")
-    void updateUser(User user);
+    void updateUserByUid(User user);
 
     //删除用户
     @Delete("delete from user where uid=#{uid}")

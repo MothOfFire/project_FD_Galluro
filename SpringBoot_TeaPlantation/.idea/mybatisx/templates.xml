@@ -30,16 +30,6 @@
                   <option name="packageName" value="${domain.basePackage}.mapper" />
                 </ModuleInfoGo>
                 <ModuleInfoGo>
-                  <option name="basePath" value="src/main/resources" />
-                  <option name="configFileName" value="mapperXml.ftl" />
-                  <option name="configName" value="mapperXml" />
-                  <option name="encoding" value="${domain.encoding}" />
-                  <option name="fileName" value="${domain.fileName}Mapper" />
-                  <option name="fileNameWithSuffix" value="${domain.fileName}Mapper.xml" />
-                  <option name="modulePath" value="$PROJECT_DIR$/teaplantation" />
-                  <option name="packageName" value="mapper" />
-                </ModuleInfoGo>
-                <ModuleInfoGo>
                   <option name="basePath" value="${domain.basePath}" />
                   <option name="configFileName" value="serviceImpl.ftl" />
                   <option name="configName" value="serviceImpl" />
@@ -68,8 +58,8 @@
             <option name="tableUIInfoList">
               <list>
                 <TableUIInfo>
-                  <option name="className" value="Visitor" />
-                  <option name="tableName" value="visitor" />
+                  <option name="className" value="Treeitem" />
+                  <option name="tableName" value="treeitem" />
                 </TableUIInfo>
               </list>
             </option>

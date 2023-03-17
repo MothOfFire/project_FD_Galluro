@@ -17,8 +17,8 @@ public interface UserService extends IService<User> {
     List<User> findUserByUserName(String keyword);
     List<User> findAllUser();
     int insertUser(User user);
-    void updateUser(User user);
-    void deleteUserById(Integer uid);
+    boolean updateUserByUid(User user);
+    boolean deleteUserById(Integer uid);
     long getTotal();
     List<User> findByPage(Map<String,Object> condition);
     long getCount(Map<String,Object> condition);

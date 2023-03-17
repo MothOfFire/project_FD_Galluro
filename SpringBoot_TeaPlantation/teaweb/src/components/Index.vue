@@ -1,11 +1,12 @@
 <template>
-  <el-container style="height: 100%; border: 1px solid #eee">
-    <el-aside :width="aside_width" style="background-color: rgb(238,241,246);height: 100%;margin-left: -1px;">
+  <el-container style="height: 100vh">
+    <el-aside :width="aside_width"
+              style="background-color: rgb(238,241,246);margin-left: -1px;">
       <Aside :is_collapse="is_collapse"></Aside>
     </el-aside>
 
-    <el-container style="height: 100%">
-      <el-header style="text-align: right; font-size: 12px;height: 100%">
+    <el-container style="height: 100vh">
+      <el-header style="text-align: right; font-size: 12px;">
         <Header @doCollapse="doCollapse" :icon_name="icon_name"></Header>
       </el-header>
 
