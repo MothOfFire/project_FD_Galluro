@@ -52,6 +52,13 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+<!--        &lt;!&ndash;ECharts的JavaScript库&ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.echarts</groupId>-->
+<!--            <artifactId>echarts-spring-boot-starter</artifactId>-->
+<!--            <version>1.1.2</version>-->
+<!--        </dependency>-->
     </dependencies>
 
     <build>

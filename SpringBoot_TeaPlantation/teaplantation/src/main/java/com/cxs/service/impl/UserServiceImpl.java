@@ -1,6 +1,7 @@
 package com.cxs.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cxs.entity.User;
@@ -9,17 +10,24 @@ import com.cxs.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements UserService {
-
     @Autowired
     UserMapper userMapper;
 
     @Override
     public User findUserByUserNameAndPassword(String uname, String password) {
+        if (uname == null || uname == "") {
+            return null;
+        }
+        if (password == null || password == "") {
+            return null;
+        }
         return userMapper.findUserByUserNameAndPassword(uname,password);
     }
 
@@ -29,12 +37,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
     }
 
     @Override
+    public List<User> findUserByUName(String uname) {
+        return userMapper.findUserByUName(uname);
+    }
+
+    @Override
     public List<User> findAllUser() {
         return userMapper.findAllUser();
     }
 
     @Override
-    public int insertUser(User user) {
+    public boolean insertUser(User user) {
         return userMapper.insertUser(user);
     }
 
@@ -61,6 +74,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
     @Override
     public long getTotal() {
         return userMapper.getTotal();
+    }
+
+    @Override
+    public Integer getTotalByPid(Integer pid) {
+        return userMapper.getTotalByPid(pid);
     }
 
     @Override

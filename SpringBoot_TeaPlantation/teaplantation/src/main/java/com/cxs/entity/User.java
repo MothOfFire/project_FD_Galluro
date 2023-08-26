@@ -18,4 +18,5 @@ public class User {
     private String address;//地址
     private String uphone;//电话
     private Integer role;//角色
+    private Integer pid;
 }

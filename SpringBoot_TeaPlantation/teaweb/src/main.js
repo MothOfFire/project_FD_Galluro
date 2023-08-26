@@ -5,8 +5,10 @@ import './assets/global.css';
 import App from './App.vue';
 import axios from "axios";
 import VueRouter from 'vue-router';
-import router from './router/routers'
+import router from './router/routers';
+import * as echarts from 'echarts';
 
+Vue.prototype.$echarts = echarts;//全局引入
 Vue.prototype.$axios = axios;
 Vue.prototype.$httpUrl = 'http://localhost:8090';
 Vue.config.productionTip = false;

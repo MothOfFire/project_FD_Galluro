@@ -45,6 +45,8 @@
       </el-table-column>
       <el-table-column prop="address" label="地址" width="180">
       </el-table-column>
+      <el-table-column prop="pid" label="园区编号" width="80">
+      </el-table-column>
       <el-table-column prop="role" label="角色" >
         <template slot-scope="scope">
           <el-tag
@@ -55,13 +57,13 @@
         </template>
       </el-table-column>
       <el-table-column prop="operate" label="操作">
-        <template slot-scope=" ">
+        <template slot-scope="scope">
             <el-button size="small"
                        type="success"
                        @click="updateUser(scope.row)">修改</el-button>
           <el-popconfirm title="确定删除吗？"
                          style="margin-left: 5px"
-                         @confirm="deleteUser(scope.row.uid)">
+                         @confirm="deleteUser(scope.row)">
             <el-button slot="reference"
                        size="small"
                        type="danger">删除</el-button>
@@ -81,6 +83,7 @@
         :total="total">
     </el-pagination>
     <!--对话框 centerDialogVisibley用来控制对话框是否出现（true表示出现）-->
+    <!--超级管理员对话框-->
     <el-dialog
         title="提示"
         :visible.sync="centerDialogVisible"
@@ -109,12 +112,53 @@
         <el-form-item prop="uphone" label="电话">
           <el-input v-model="form.uphone" style="width: 80%"></el-input>
         </el-form-item>
+        <el-form-item prop="pid" label="园区编号">
+          <el-input v-model="form.pid" style="width: 80%"></el-input>
+        </el-form-item>
         <el-form-item prop="role" label="角色">
           <el-radio-group v-model="form.role">
             <el-radio label="0">超级管理员</el-radio>
             <el-radio label="1">管理员</el-radio>
             <el-radio label="2">员工</el-radio>
           </el-radio-group>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+    <el-button @click="centerDialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="save">确 定</el-button>
+  </span>
+    </el-dialog>
+    <!--管理员对话框-->
+    <el-dialog
+        title="提示"
+        :visible.sync="centerDialogVisible2"
+        width="30%"
+        center
+        :before-close="handleClose">
+      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+        <el-form-item prop="uname" label="名称">
+          <el-input v-model="form.uname" style="width: 80%"></el-input>
+        </el-form-item>
+        <el-form-item prop="password" label="密码">
+          <el-input v-model="form.password" style="width: 80%"></el-input>
+        </el-form-item>
+        <el-form-item prop="usex" label="性别">
+          <el-radio-group v-model="form.usex">
+            <el-radio label="1">男</el-radio>
+            <el-radio label="0">女</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item prop="uage" label="年龄">
+          <el-input v-model="form.uage" style="width: 80%"></el-input>
+        </el-form-item>
+        <el-form-item prop="address" label="地址">
+          <el-input v-model="form.address" style="width: 80%"></el-input>
+        </el-form-item>
+        <el-form-item prop="uphone" label="电话">
+          <el-input v-model="form.uphone" style="width: 80%"></el-input>
+        </el-form-item>
+        <el-form-item prop="pid" label="园区编号">
+          <el-input v-model="form.pid" style="width: 80%"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -167,6 +211,7 @@ export default {
         }
       ],
       centerDialogVisible:false,
+      centerDialogVisible2:false,
       form:{
         uname:'',
         password:'',
@@ -174,7 +219,8 @@ export default {
         uage:'',
         address:'',
         uphone:'',
-        role:'2'
+        role:'2',
+        pid:''
       },
       rules: {
         uname: [
@@ -199,6 +245,11 @@ export default {
           { required: true, message: '请输入电话', trigger: 'blur' },
           { pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,message: '请输入正确的手机号',trigger: 'blur' }
         ],
+        pid:[
+          { required: true, message: '请输入工作园区编号', trigger: 'blur' },
+          { min: 1, max: 2, message: '长度在 1 到 2 个字符', trigger: 'blur' },
+          {pattern: /^([1-9][0-9]*){1,2}$/,message: '工作园区编号必须是正整数',trigger: 'blur'},
+        ]
       }
     }
   },
@@ -267,46 +318,79 @@ export default {
       this.usex = '';
     },
     add(){
-      this.centerDialogVisible = true;
-      this.$nextTick(()=>{
-        this.resetForm();
-      });
+      if (this.user.role == '0'){
+        this.centerDialogVisible = true;
+        this.$nextTick(()=>{
+          this.resetForm();
+        });
+      }
+      else if (this.user.role == '1'){
+        this.centerDialogVisible2 = true;
+        this.$nextTick(()=>{
+          this.resetForm();
+        });
+      }
     },
     updateUser(row){
       console.log(row);
-      this.centerDialogVisible = true;
-      this.$nextTick(()=>{
-        //赋值到表单
-        this.form.uid = row.uid;
-        this.form.uname = row.uname;
-        this.form.password = row.password;
-        this.form.usex = row.usex+'';
-        this.form.uage = row.uage+'';
-        this.form.address = row.address;
-        this.form.uphone = row.uphone;
-        this.form.role = row.role+'';
-      });
+      if(this.user.role == '0'){
+        this.centerDialogVisible = true;
+        this.$nextTick(()=>{
+          //赋值到表单
+          this.form.uid = row.uid;
+          this.form.uname = row.uname;
+          this.form.password = row.password;
+          this.form.usex = row.usex+'';
+          this.form.uage = row.uage+'';
+          this.form.address = row.address;
+          this.form.uphone = row.uphone;
+          this.form.role = row.role+'';
+          this.form.pid = row.pid+'';
+        });
+      }
+      else if (this.user.role == '1'){
+        this.centerDialogVisible2 = true;
+        this.$nextTick(()=>{
+          //赋值到表单
+          this.form.uid = row.uid;
+          this.form.uname = row.uname;
+          this.form.password = row.password;
+          this.form.usex = row.usex+'';
+          this.form.uage = row.uage+'';
+          this.form.address = row.address;
+          this.form.uphone = row.uphone;
+          this.form.pid = row.pid+'';
+        });
+      }
     },
-    deleteUser(uid){
-      console.log(uid);
-      this.$axios.get(this.$httpUrl+'/user/deleteUser?uid='+uid)
-          .then(res=>res.data).then(res=>{
-        console.log(res);
-        if(res.code==200){
-          this.$message({
-            showClose: true,
-            message: '数据删除成功',
-            type: 'success'
-          });
-          this.loadPost();
-        }else {
-          this.$message({
-            showClose: true,
-            message: '数据删除失败',
-            type: 'error'
-          });
-        }
-      });
+    deleteUser(row){
+      console.log(row);
+      if(this.user.role == '1' && row.role =='0'){
+        this.$message({
+          showClose: true,
+          message: '权限不足，无法删除',
+          type: 'error'
+        });
+      } else{
+        this.$axios.get(this.$httpUrl+'/user/deleteUser?uid='+row.uid)
+            .then(res=>res.data).then(res=>{
+          console.log(res);
+          if(res.code==200){
+            this.$message({
+              showClose: true,
+              message: '数据删除成功',
+              type: 'success'
+            });
+            this.loadPost();
+          }else {
+            this.$message({
+              showClose: true,
+              message: '数据删除失败',
+              type: 'error'
+            });
+          }
+        });
+      }
     },
     handleClose(done) {
       this.$confirm('确认关闭？')
@@ -339,7 +423,12 @@ export default {
                     message: '数据添加成功',
                     type: 'success'
                   });
-                  this.centerDialogVisible = false;
+                  if (this.user.role == '0'){
+                    this.centerDialogVisible = false;
+                  }
+                  else if (this.user.role == '1'){
+                    this.centerDialogVisible2 = false;
+                  }
                   this.loadPost();
                   this.resetForm();
                 }else {

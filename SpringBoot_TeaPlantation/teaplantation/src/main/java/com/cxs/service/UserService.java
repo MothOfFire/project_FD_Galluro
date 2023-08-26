@@ -15,11 +15,13 @@ public interface UserService extends IService<User> {
 
     User findUserByUserNameAndPassword(String uname,String password);
     List<User> findUserByUserName(String keyword);
+    List<User> findUserByUName(@Param("uname") String uname);
     List<User> findAllUser();
-    int insertUser(User user);
+    boolean insertUser(User user);
     boolean updateUserByUid(User user);
     boolean deleteUserById(Integer uid);
     long getTotal();
+    Integer getTotalByPid(Integer pid);
     List<User> findByPage(Map<String,Object> condition);
     long getCount(Map<String,Object> condition);
     IPage<User> findByAllPage(IPage<User> page ,@Param(Constants.WRAPPER) Wrapper wrapper);

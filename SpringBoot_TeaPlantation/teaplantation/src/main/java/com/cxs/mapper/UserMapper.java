@@ -24,6 +24,9 @@ public interface UserMapper extends BaseMapper<User> {
     @Select("select * from user where uname like concat('%',#{keyword},'%')")
     List<User> findUserByUserName(String keyword);
 
+    @Select("select * from user where uname=#{uname}")
+    List<User> findUserByUName(@Param("uname") String uname);
+
     //查询所有用户
     @Select("select * from user")
     List<User> findAllUser();
@@ -32,9 +35,13 @@ public interface UserMapper extends BaseMapper<User> {
     @Select("select count(*) from user")
     long getTotal();
 
+    //获取某个园区的员工人数
+    @Select("select count(*) from user where pid = #{pid}")
+    Integer getTotalByPid(Integer pid);
+
     //添加用户
-    @Insert("insert into user values(null,#{uname},#{password},#{usex},#{uage},#{address},#{uphone},#{role})")
-    int insertUser(User user);
+    @Insert("insert into user values(null,#{uname},#{password},#{usex},#{uage},#{address},#{uphone},#{role},#{pid})")
+    boolean insertUser(User user);
 
     //修改用户
     @Update("update user " +
@@ -42,7 +49,7 @@ public interface UserMapper extends BaseMapper<User> {
             "password=#{password}," +
             "usex=#{usex},uage=#{uage}," +
             "address=#{address},uphone=#{uphone}," +
-            "role=#{role} where uid=#{uid} ")
+            "role=#{role},pid=#{pid} where uid=#{uid} ")
     void updateUserByUid(User user);
 
     //删除用户

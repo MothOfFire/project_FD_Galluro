@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 
 @TableName(value ="visitor")
 @Data
@@ -20,4 +22,7 @@ public class Visitor{
     private Integer vage;//游客年龄
     private String vphone;//游客电话
     private Integer cid;//游客的车位id
+    private Date entertime;//游客进入茶园的时间
+    private Date outtime;//游客出茶园的时间
+    private String status;//游客状态1为出园，0为还在园内
 }

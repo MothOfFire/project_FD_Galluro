@@ -1,8 +1,8 @@
 <template>
   <el-container style="height: 100vh">
     <el-aside :width="aside_width"
-              style="background-color: rgb(238,241,246);margin-left: -1px;">
-      <Aside :is_collapse="is_collapse"></Aside>
+              style="background-color: rgb(238,241,246);">
+        <Aside :is_collapse="is_collapse"></Aside>
     </el-aside>
 
     <el-container style="height: 100vh">
@@ -10,20 +10,19 @@
         <Header @doCollapse="doCollapse" :icon_name="icon_name"></Header>
       </el-header>
 
-      <el-main style="height: 100%">
-        <Main></Main>
+      <el-main style="height: 100%;background-color: #f8f8f0" >
+        <router-view/>
       </el-main>
     </el-container>
   </el-container>
 </template>
 
 <script>
-import Aside from "@/components/Aside";
-import Header from "@/components/Header";
-import Main from "@/components/Main";
+import Aside from "@/components/basicComponents/Aside";
+import Header from "@/components/basicComponents/Header";
 export default {
   name:"Index",
-  components: {Main, Header, Aside},
+  components: {Header, Aside},
   data(){
     return{
       is_collapse:false,
@@ -49,17 +48,21 @@ export default {
 </script>
 
 <style scoped>
-.el-header {
-  background-color: #bac0c1;
-  color: #333;
-  line-height: 60px;
-}
+ .el-header {
+   background-color: #bac0c1;
+   color: #333;
+   line-height: 60px;
+ }
 
-.el-main{
-  padding: 5px;
-}
+ .el-main{
+   padding: 5px;
+ }
 
-.el-aside {
-  color: #333;
-}
+ .el-aside {
+   color: #333;
+ }
+ /*消除导航栏的下拉条*/
+ .el-aside::-webkit-scrollbar {
+   display: none;
+ }
 </style>

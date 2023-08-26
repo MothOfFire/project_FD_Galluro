@@ -20,6 +20,6 @@ public class Teapark{
     private Integer pid;//茶园区域id
     private String pname;//茶园区域名称
     private Double area;//面积
-    private String topography;//地形
+    private String function;//园区职能
     private Integer aid;//管理员id
 }

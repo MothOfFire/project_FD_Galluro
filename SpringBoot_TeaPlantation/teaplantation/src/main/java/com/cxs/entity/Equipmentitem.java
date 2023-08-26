@@ -18,6 +18,6 @@ public class Equipmentitem{
     private Integer ino;//设备编码（用于标识每个设备）
     private Integer eid;//设备id与Equipment对应（用于标识每种设备）
     private String isbad;//是否损坏
-    private Integer aid;//管理员id
     private Integer pid;//所在茶园区域id
+    private String ename;//设备名称
 }

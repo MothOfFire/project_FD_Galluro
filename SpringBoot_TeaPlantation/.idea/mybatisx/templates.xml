@@ -58,8 +58,8 @@
             <option name="tableUIInfoList">
               <list>
                 <TableUIInfo>
-                  <option name="className" value="Treeitem" />
-                  <option name="tableName" value="treeitem" />
+                  <option name="className" value="Gatherspeed" />
+                  <option name="tableName" value="gatherspeed" />
                 </TableUIInfo>
               </list>
             </option>
